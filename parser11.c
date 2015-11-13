@@ -48,6 +48,31 @@ void parse_FuncArgList_dash(void);
 
 int nextToken; /* 次のトークンが入る変数 */
 
+const int tableMax = 128;
+char func_table[tableMax][64];
+int  tableIndex = 0;
+int checkTable(char *funcName)
+{
+    /* 指定した名前の関数があるか調べる */
+    int flag = 0;
+    for (int i = 0; i < tableIndex; i++)
+    {
+        if (strcmp(funcName, func_table[i]) == 0) flag = 1;
+    }
+    return flag; /* 同じ名前の関数があったら1を返す  */
+}
+int addTable(char *funcName)
+{
+    /* 関数名が被らないか調べる */
+    if (checkTable(funcName)) return -1; /* 関数名がかぶったら-1を返す */
+    if (tableIndex == tableMax) return -1; /* これ以上関数テーブルに追加できない */
+
+   /* 関数をテーブルに追加 */
+   strcpy(func_table[tableIndex], funcName);
+   tableIndex++;
+   return 0;
+}
+
 int getToken(void) { /* トークンを取得する関数 */
   int token = yylex();
   if (token == 0) { /* yylex()が0を返す時がEOFのようだ */
@@ -177,6 +202,9 @@ void parse_FuncDecl() {
   /* T_FUNC では何もしない。次のトークンを読む */
   nextToken = getToken();
   if (nextToken != T_ID) pl0parse_error("not ID");
+  //puts(yytext);
+  if (addTable(yytext) == -1) pl0parse_error("defined ID");
+  else printf("Add Table");
   nextToken = getToken();
   if (nextToken != T_LPAR) pl0parse_error("not (");
   nextToken = getToken();
@@ -339,6 +367,15 @@ void parse_Factor() {
   printf("Enter Factor\n");
   if (nextToken == T_ID) { 
     /* 右辺値変数 or 関数呼び出しの判断をしなければならない */
+    if (checkTable(yytext)) {  /* 関数テーブルにあった場合の処理 */ 
+      puts("Enter Func");
+      nextToken = getToken();
+      if (nextToken != T_LPAR) pl0parse_error("not (");
+      else {
+        nextToken = getToken();
+        parse_FuncArgList();
+      }
+    }
     nextToken = getToken();
   } else if (nextToken == T_NUMBER) { 
     /* ここで数字の処理 */

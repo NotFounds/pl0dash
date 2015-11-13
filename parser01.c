@@ -1,3 +1,9 @@
+/* 簡易演算文法用 LL(1)再帰下降型構文解析器 No.02
+ *              2015年後期 鹿児島高専
+ *              3年生 言語処理系 授業用
+ *     * 構文解析と擬似アセンブリコードも出力
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,25 +25,25 @@ int nextToken; /* 次のトークンが入る変数 */
 
 int getToken(void) {
   int token = yylex();
-  if (token == 0) {token = T_EOF; } /* yylex()が0を返す時がEOFのようだ */
+  if (token == 0) token = T_EOF; /* yylex()が0を返す時がEOFのようだ */
   return token;
 }
 
 void parse_error(char *error_message) {
   printf ("parse error: %s\n", error_message);
-  exit(0);
+  exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     printf ("argument error\n");
-    exit(0);
+    exit(EXIT_FAILURE);
   }
 
   yyin = fopen(argv[1], "r"); /* ファイルを開く処理 */
   if (yyin  == NULL) {
     printf ("%s file not found.\n", argv[1]);
-    exit(0);
+    exit(EXIT_FAILURE);
   }
 
   /* 最初に1トークン読み込んでおく */
