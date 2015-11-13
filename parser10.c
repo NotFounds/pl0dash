@@ -1,12 +1,10 @@
-/* PL/0' 用 LL(1)再帰下降型構文解析器 No.01
- *              2015年後期 鹿児島高専
- *              3年生 言語処理系 授業用
- *   * 構文解析しか行っていない
- *   * ループを使わず再帰のみでやっている
- *   * 変数のIDと関数のIDの分岐をしていないため
- *     関数があると構文エラーとなる
- *
- */
+/* PL/0' 用 LL(1)再帰下降型構文解析器 No.01      */
+/*              2015年後期 鹿児島高専            */
+/*              3年生 言語処理系 授業用          */
+/*   * 構文解析しか行っていない                  */
+/*   * ループを使わず再帰のみでやっている        */
+/*   * 変数のIDと関数のIDの分岐をしていないため  */
+/*     関数があると構文エラーとなる              */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,19 +57,19 @@ int getToken(void) { /* トークンを取得する関数 */
 void pl0parse_error(char *error_message) { /* 構文エラーを出す関数 */
   printf("parse error near line %d(%s): %s\n",
          line_number, yytext, error_message);
-  exit(EXIT_FAILURE);
+  exit(0);
 }
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     printf ("argument error\n");
-    exit(EXIT_FAILURE);
+    exit(0);
   }
 
   yyin = fopen(argv[1], "r");
   if (yyin  == NULL) {
     printf ("%s file not found.\n", argv[1]);
-    exit(EXIT_FAILURE);
+    exit(0);
   }
 
   /* 構文解析スタート */
